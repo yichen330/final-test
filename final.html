@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Final</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+        function processImage() {
+            // **********************************************
+            // *** Update or verify the following values. ***
+            // **********************************************
+            let subscriptionKey = 'dcf1308c02114d62a592ff74e5a7efd3';
+            let endpoint = 'https://southcentralus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/1bb2ef7c-07fa-44e2-957c-03e2c675a43a/classify/iterations/Iteration2/url';
+            if (!subscriptionKey) { throw new Error('Set your environment variables for your subscription key and endpoint.'); }
+
+            // Display the image.
+            var sourceImageUrl = document.getElementById("inputImage").value;
+            document.querySelector("#sourceImage").src = sourceImageUrl;
+            // Make the REST API call.
+            $.ajax({
+                url: endpoint + "?",
+                // Request headers.
+                beforeSend: function (xhrObj) {
+                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                    xhrObj.setRequestHeader("Prediction-Key", subscriptionKey);
+                },
+                type: "POST",
+                // Request body.
+                data: '{"url": ' + '"' + sourceImageUrl + '"}',
+            })
+                .done(function (data) {
+                    // Show formatted JSON on webpage.
+                    $("#responseTextArea").val(JSON.stringify(data, null, 2));
+                })
+                .fail(function (jqXHR, textStatus, errorThrown) {
+                    // Display error message.
+                    var errorString = (errorThrown === "") ? "Error. " :
+                        errorThrown + " (" + jqXHR.status + "): ";
+                    errorString += (jqXHR.responseText === "") ? "" :
+                        jQuery.parseJSON(jqXHR.responseText).message;
+                    alert(errorString);
+                });
+        };
+    </script>
+
+    <div class="header">
+        <h1>Finaltest:</h1>
+        <a>URL:</a>
+        <input type="text" name="inputImage" id="inputImage" value="" />
+        <button id="inputbtn" onclick="processImage()">送出</button>
+        <br><br>
+    </div>
+    <div class="content">
+
+        <div id="wrapper">
+            <div id="imageDiv">
+                圖片:
+                <br><br>
+                <img id="sourceImage" />
+            </div>
+            <div id="jsonOutput">
+                結果:
+                <br><br>
+                <textarea id="responseTextArea"></textarea>
+
+            </div>
+        </div>
+    </div>
+</body>
+<style>
+    * {
+        margin: 0px;
+        padding: 0px;
+        font-family: Karla, sans-serif;
+    }
+
+    body {
+        background-color: rgb(176, 180, 180);
+    }
+
+    .header {
+        width: 100%;
+        height: 20%;
+    }
+
+    .content {
+        width: 100%;
+        height: 80%;
+        float: left;
+    }
+
+    #wrapper {
+        width: 1020px;
+        display: table;
+    }
+
+    #jsonOutput {
+        width: 600px;
+        display: table-cell;
+    }
+
+    #responseTextArea {
+        margin-left: 45px;
+        background-color: rgb(176, 180, 180);
+        border: 1.5px rgb(0, 0, 0) solid;
+        border-radius: 5px;
+        width: 580px;
+        height: 400px;
+    }
+
+    #imageDiv {
+        width: 420px;
+        display: table-cell;
+    }
+
+    #inputbtn {
+        border: 1px rgb(0, 0, 0) solid;
+        border-radius: 5px;
+        height: 23px;
+    }
+
+    #inputImage {
+        border: 1px rgb(0, 0, 0) solid;
+        border-radius: 5px;
+        width: 400px;
+        height: 20px;
+    }
+
+    #sourceImage {
+        margin-left: 45px;
+        border: 1.5px rgb(0, 0, 0) solid;
+        border-radius: 5px;
+        width: 580px;
+        height: 400px;
+    }
+</style>
+
+</html>
